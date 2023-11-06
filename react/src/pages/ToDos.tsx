@@ -16,7 +16,13 @@ export default function ToDos() {
 
     async function getToDos() {
         const response = await api('todos');
-        setTodos([...response.data]);
+
+        if (response.status !== 200) {
+            console.log("Error retrieving todos")
+            return;
+        }
+
+        setTodos([...response.data as ToDo[]]);
     }
 
     async function removeToDo(id: number) {
