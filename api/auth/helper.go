@@ -25,10 +25,10 @@ func AuthConfig() echojwt.Config {
 
 func CreateToken(user db.User) (string, error) {
 	claims := &JwtCustomClaims{
-		ID:    user.ID,
+		ID:    user.Id,
 		Email: user.Email,
 		RegisteredClaims: jwt.RegisteredClaims{
-			ExpiresAt: jwt.NewNumericDate(time.Now().Add(24 * time.Hour)),
+			ExpiresAt: jwt.NewNumericDate(time.Now().Add(15 * time.Minute)),
 		},
 	}
 
@@ -43,7 +43,7 @@ func CreateToken(user db.User) (string, error) {
 func CreateRefreshToken(user db.User, con *gorm.DB) db.RefreshToken {
 	refreshToken := db.RefreshToken{
 		RefreshToken: uuid.NewString(),
-		UserID:       user.ID,
+		UserID:       user.Id,
 		Expiration:   time.Now().Add(24 * time.Hour),
 	}
 
@@ -53,7 +53,7 @@ func CreateRefreshToken(user db.User, con *gorm.DB) db.RefreshToken {
 
 func RemoveUsersRefreshTokens(user db.User, con *gorm.DB) {
 	var refreshTokens []db.RefreshToken
-	con.Where("user_id = ?", user.ID).Find(&refreshTokens)
+	con.Where("user_id = ?", user.Id).Find(&refreshTokens)
 	con.Delete(&refreshTokens)
 }
 

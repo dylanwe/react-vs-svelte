@@ -38,7 +38,7 @@ func AuthRoutes(router *echo.Group, con *gorm.DB) {
 
 		var user db.User
 		con.Where("email = ?", req.Email).First(&user)
-		if user.ID != 0 {
+		if user.Id != 0 {
 			return c.JSON(http.StatusConflict, echo.Map{
 				"message": "Email already exists",
 			})
@@ -76,7 +76,7 @@ func AuthRoutes(router *echo.Group, con *gorm.DB) {
 
 		var user db.User
 		con.Where("email = ?", req.Email).First(&user)
-		if user.ID == 0 {
+		if user.Id == 0 {
 			return c.JSON(http.StatusUnauthorized, echo.Map{
 				"message": "Email does not exist",
 			})
@@ -109,7 +109,7 @@ func AuthRoutes(router *echo.Group, con *gorm.DB) {
 
 		var refreshToken db.RefreshToken
 		con.Where("refresh_token = ?", req.RefreshToken).First(&refreshToken)
-		if refreshToken.ID == 0 {
+		if refreshToken.Id == 0 {
 			return c.JSON(http.StatusUnauthorized, echo.Map{
 				"message": "Invalid refresh token",
 			})
@@ -117,7 +117,7 @@ func AuthRoutes(router *echo.Group, con *gorm.DB) {
 
 		var user db.User
 		con.Where("id = ?", refreshToken.UserID).First(&user)
-		if user.ID == 0 {
+		if user.Id == 0 {
 			return c.JSON(http.StatusUnauthorized, echo.Map{
 				"message": "Invalid refresh token",
 			})

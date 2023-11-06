@@ -34,6 +34,7 @@ func main() {
 
 	// Middleware
 	e.Use(middleware.Logger())
+	e.Use(middleware.CORS())
 
 	// JWT auth
 	jwtAuth := auth.AuthConfig()

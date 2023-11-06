@@ -53,18 +53,11 @@ func ToDoRoutes(router *echo.Group, con *gorm.DB) {
 	})
 
 	router.DELETE("/:id", func(c echo.Context) error {
-		user := c.Get("user").(*jwt.Token)
-		claims := user.Claims.(*auth.JwtCustomClaims)
-		userId := claims.ID
-
-		todo := db.ToDo{}
-		err := c.Bind(&todo)
-		if err != nil {
-			return err
-		}
-
-		todo.UserID = userId
+		id := c.Param("id")
+		var todo db.ToDo
+		con.Where("id = ?", id).First(&todo)
 		con.Delete(&todo)
+
 		return c.JSON(http.StatusOK, todo)
 	})
 }
