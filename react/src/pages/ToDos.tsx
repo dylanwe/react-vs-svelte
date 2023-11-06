@@ -49,7 +49,7 @@ export default function ToDos() {
 
     useEffect(() => {
         getToDos();
-    });
+    }, []);
 
     return (
         <section className="max-w-2xl mx-auto py-16">
