@@ -2,11 +2,10 @@ package routes
 
 import (
 	"dylanwe.com/api/auth"
-	"dylanwe.com/api/db"
+	"dylanwe.com/api/database"
 	_ "github.com/joho/godotenv/autoload"
 	"github.com/labstack/echo/v4"
 	"golang.org/x/crypto/bcrypt"
-	"gorm.io/gorm"
 	"net/http"
 )
 
@@ -29,15 +28,15 @@ type jwtResponse struct {
 	RefreshToken string `json:"refreshToken"`
 }
 
-func AuthRoutes(router *echo.Group, con *gorm.DB) {
+func AuthRoutes(router *echo.Group) {
 	router.POST("/register", func(c echo.Context) error {
 		req := new(registerRequest)
 		if err := c.Bind(req); err != nil {
 			return err
 		}
 
-		var user db.User
-		con.Where("email = ?", req.Email).First(&user)
+		var user database.User
+		database.DB.Db.Where("email = ?", req.Email).First(&user)
 		if user.Id != 0 {
 			return c.JSON(http.StatusConflict, echo.Map{
 				"message": "Email already exists",
@@ -46,20 +45,20 @@ func AuthRoutes(router *echo.Group, con *gorm.DB) {
 
 		bytes, _ := bcrypt.GenerateFromPassword([]byte(req.Password), 14)
 
-		newUser := db.User{
+		newUser := database.User{
 			Email:    req.Email,
 			Password: string(bytes),
 		}
 
-		con.Create(&newUser)
+		database.DB.Db.Create(&newUser)
 
 		t, err := auth.CreateToken(newUser)
 		if err != nil {
 			return err
 		}
 
-		auth.RemoveUsersRefreshTokens(user, con)
-		refreshToken := auth.CreateRefreshToken(newUser, con)
+		auth.RemoveUsersRefreshTokens(user)
+		refreshToken := auth.CreateRefreshToken(newUser)
 
 		return c.JSON(http.StatusOK, jwtResponse{
 			Token:        t,
@@ -74,8 +73,8 @@ func AuthRoutes(router *echo.Group, con *gorm.DB) {
 			return err
 		}
 
-		var user db.User
-		con.Where("email = ?", req.Email).First(&user)
+		var user database.User
+		database.DB.Db.Where("email = ?", req.Email).First(&user)
 		if user.Id == 0 {
 			return c.JSON(http.StatusUnauthorized, echo.Map{
 				"message": "Email does not exist",
@@ -92,8 +91,8 @@ func AuthRoutes(router *echo.Group, con *gorm.DB) {
 			return err
 		}
 
-		auth.RemoveUsersRefreshTokens(user, con)
-		refreshToken := auth.CreateRefreshToken(user, con)
+		auth.RemoveUsersRefreshTokens(user)
+		refreshToken := auth.CreateRefreshToken(user)
 
 		return c.JSON(http.StatusOK, jwtResponse{
 			Token:        t,
@@ -107,16 +106,16 @@ func AuthRoutes(router *echo.Group, con *gorm.DB) {
 			return err
 		}
 
-		var refreshToken db.RefreshToken
-		con.Where("refresh_token = ?", req.RefreshToken).First(&refreshToken)
+		var refreshToken database.RefreshToken
+		database.DB.Db.Where("refresh_token = ?", req.RefreshToken).First(&refreshToken)
 		if refreshToken.Id == 0 {
 			return c.JSON(http.StatusUnauthorized, echo.Map{
 				"message": "Invalid refresh token",
 			})
 		}
 
-		var user db.User
-		con.Where("id = ?", refreshToken.UserID).First(&user)
+		var user database.User
+		database.DB.Db.Where("id = ?", refreshToken.UserID).First(&user)
 		if user.Id == 0 {
 			return c.JSON(http.StatusUnauthorized, echo.Map{
 				"message": "Invalid refresh token",
@@ -124,15 +123,15 @@ func AuthRoutes(router *echo.Group, con *gorm.DB) {
 		}
 
 		if auth.IsRefreshExpired(refreshToken.Expiration) {
-			con.Delete(&refreshToken)
+			database.DB.Db.Delete(&refreshToken)
 
 			return c.JSON(http.StatusUnauthorized, echo.Map{
 				"message": "Refresh token expired",
 			})
 		}
 
-		auth.RemoveUsersRefreshTokens(user, con)
-		newRefreshToken := auth.CreateRefreshToken(user, con)
+		auth.RemoveUsersRefreshTokens(user)
+		newRefreshToken := auth.CreateRefreshToken(user)
 
 		t, err := auth.CreateToken(user)
 		if err != nil {
