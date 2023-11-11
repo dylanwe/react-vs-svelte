@@ -4,7 +4,7 @@ import useAuth from "./auth.hooks.ts";
 import { privateAxios } from "../util/axios.ts";
 
 export default function useAxios() {
-    const {setIsAuthenticated} = useAuth();
+    const { setIsAuthenticated } = useAuth();
 
     const api = privateAxios;
 
@@ -13,7 +13,7 @@ export default function useAxios() {
             const token = localStorage.getItem('token');
 
             if (token) {
-                const {token: jwtToken} = JSON.parse(token) as StoredJwt;
+                const { token: jwtToken } = JSON.parse(token) as StoredJwt;
                 req.headers.Authorization = `Bearer ${jwtToken}`;
             }
 
@@ -23,31 +23,31 @@ export default function useAxios() {
         const responseIntercept = api.interceptors.response.use(
             async res => res,
             async error => {
-            const originalRequest = error.config;
-            if (error.response && error.response.status === 401 && !originalRequest._retry) {
-                originalRequest._retry = true;
-                const token = localStorage.getItem('token');
-                if (token) {
-                    const { refreshToken } = JSON.parse(token) as StoredJwt;
-                    localStorage.removeItem('token')
+                const originalRequest = error.config;
+                if (error.response && error.response.status === 401 && !originalRequest._retry) {
+                    originalRequest._retry = true;
+                    const token = localStorage.getItem('token');
+                    if (token) {
+                        const { refreshToken } = JSON.parse(token) as StoredJwt;
+                        localStorage.removeItem('token')
 
-                    const response = await api.post(`/auth/refresh`, {
-                        refreshToken,
-                    })
+                        const response = await api.post(`/auth/refresh`, {
+                            refreshToken,
+                        })
 
-                    if (response.status !== 200) {
-                        setIsAuthenticated(false);
-                        return error;
+                        if (response.status !== 200) {
+                            setIsAuthenticated(false);
+                            return error;
+                        }
+
+                        localStorage.setItem('token', JSON.stringify(response.data));
+                        setIsAuthenticated(true);
+                        return await api.request(originalRequest);
                     }
-
-                    localStorage.setItem('token', JSON.stringify(response.data));
-                    setIsAuthenticated(true);
-                    return await api.request(originalRequest);
                 }
-            }
 
-            return error;
-        })
+                return error;
+            })
 
         return () => {
             api.interceptors.request.eject(requestIntercept);

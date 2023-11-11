@@ -6,9 +6,10 @@ export interface AuthContextProps {
 }
 
 const AuthContext = createContext<AuthContextProps>({
-   isAuthenticated: true,
+    isAuthenticated: true,
     // eslint-disable-next-line @typescript-eslint/no-empty-function
-    setIsAuthenticated: () => {},
+    setIsAuthenticated: () => {
+    },
 });
 
 export default AuthContext;

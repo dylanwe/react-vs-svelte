@@ -5,7 +5,7 @@ interface AuthProviderProps {
     children: React.ReactNode;
 }
 
-export default function AuthProvider({children}: AuthProviderProps) {
+export default function AuthProvider({ children }: AuthProviderProps) {
     const [isAuth, setAuth] = useState<boolean>(!!localStorage.getItem('token'));
 
     const contextValue: AuthContextProps = {
