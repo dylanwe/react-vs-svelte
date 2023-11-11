@@ -10,12 +10,8 @@
 </script>
 
 <Router {url}>
-    <Route path={LOGIN}>
-        <Login/>
-    </Route>
-    <Route path={REGISTER}>
-        <Register/>
-    </Route>
+    <Route path={LOGIN} component={Login} />
+    <Route path={REGISTER} component={Register} />
     <Route path={TODOS}>
         <PrivateRouteWrapper>
             <ToDos/>

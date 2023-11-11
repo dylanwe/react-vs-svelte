@@ -5,7 +5,13 @@ interface ToDoFormProps {
 }
 
 export default function ToDoForm({ newToDo, setNewToDo, addToDo }: ToDoFormProps) {
-    return <form className="flex gap-4 my-4">
+    return <form
+        onSubmit={(e) => {
+            e.preventDefault()
+            addToDo()
+        }}
+        className="flex gap-4 my-4"
+    >
         <input
             type="text"
             className="border-2 flex-1 px-4 rounded-md form-input"
@@ -14,9 +20,8 @@ export default function ToDoForm({ newToDo, setNewToDo, addToDo }: ToDoFormProps
             onChange={(e) => setNewToDo(e.target.value)}
         />
         <button
-            type="button"
+            type="submit"
             className="btn btn-primary rounded-md"
-            onClick={() => addToDo()}
         >
             Add
         </button>

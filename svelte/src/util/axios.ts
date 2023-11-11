@@ -41,7 +41,7 @@ privateAxios.interceptors.response.use(
                 const { refreshToken } = JSON.parse(token) as StoredJwt;
                 localStorage.removeItem(TOKEN_KEY)
 
-                const response = await api.post(`/auth/refresh`, {
+                const response = await privateAxios.post(`/auth/refresh`, {
                     refreshToken,
                 })
 
@@ -53,7 +53,7 @@ privateAxios.interceptors.response.use(
                 console.log("refreshed token");
                 localStorage.setItem(TOKEN_KEY, JSON.stringify(response.data));
                 isAuth.set(true);
-                return await api.request(originalRequest);
+                return await privateAxios.request(originalRequest);
             }
         }
 

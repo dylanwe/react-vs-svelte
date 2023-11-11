@@ -3,7 +3,7 @@
     export let addToDo: () => void;
 </script>
 
-<form class="flex gap-4 my-4">
+<form on:submit|preventDefault={() => addToDo()} class="flex gap-4 my-4">
     <input
             type="text"
             class="border-2 flex-1 px-4 rounded-md form-input"
@@ -11,9 +11,8 @@
             bind:value={newToDo}
     />
     <button
-            type="button"
+            type="submit"
             class="btn btn-primary rounded-md"
-            on:click={addToDo}
     >
         Add
     </button>

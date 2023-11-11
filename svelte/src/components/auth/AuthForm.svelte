@@ -1,7 +1,7 @@
 <script lang="ts">
     export let title: string;
     export let submitText: string;
-    export let onSubmit: (email: string, password: string) => Promise<void>;
+    export let onSubmit: (email: string, password: string) => void;
     export let loading: boolean;
 
     let email = '';
@@ -15,17 +15,20 @@
                 <h1 class="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
                     {title}
                 </h1>
-                <form class="space-y-4 md:space-y-6">
+                <form
+                        on:submit|preventDefault={() => onSubmit(email, password)}
+                        class="space-y-4 md:space-y-6"
+                >
                     <div>
                         <label for="email" class="block mb-2 text-sm font-medium text-gray-900">Your
                             email</label>
                         <input
-                            bind:value={email}
-                            type="email"
-                            name="email"
-                            class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
-                            placeholder="name@company.com"
-                            required={true}
+                                bind:value={email}
+                                type="email"
+                                name="email"
+                                class="bg-gray-50 border border-gray-300 text-gray-900 sm:text-sm rounded-lg block w-full p-2.5"
+                                placeholder="name@company.com"
+                                required={true}
                         />
                     </div>
                     <div>
@@ -41,9 +44,8 @@
                         />
                     </div>
                     <button
-                            type="button"
+                            type="submit"
                             class="btn btn-primary w-full"
-                            on:click={() => onSubmit(email, password)}
                     >
                         {submitText}
                         {#if loading}

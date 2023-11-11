@@ -32,7 +32,7 @@
         title="Create an account"
         submitText="Register"
         onSubmit={register}
-        loading={loading}
+        {loading}
 >
     <div slot="link">
         Already have an account?

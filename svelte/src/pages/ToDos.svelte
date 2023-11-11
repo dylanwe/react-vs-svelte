@@ -50,15 +50,15 @@
 <section class="max-w-2xl mx-auto py-16 px-4">
     <ToDoHeader />
 
-    <ToDoForm addToDo={addToDo} bind:newToDo/>
+    <ToDoForm {addToDo} bind:newToDo/>
 
     {#if (todos.length > 0)}
         <ul>
             {#each todos as todo (todo.id)}
                 <ToDoItem
-                        todo={todo}
-                        updateToDo={updateToDo}
-                        removeToDo={removeToDo}
+                        {todo}
+                        {updateToDo}
+                        {removeToDo}
                 />
             {/each}
         </ul>

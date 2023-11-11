@@ -14,9 +14,7 @@
             checked={todo.completed}
             class="checkbox checkbox-primary"
     />
-    <span
-            class={`flex-1 ${todo.completed && "line-through text-slate-500"}`}
-    >
+    <span class={`flex-1 ${todo.completed && "line-through text-slate-500"}`}>
         {todo.description}
     </span>
     <button

@@ -1,5 +1,4 @@
 <script lang="ts">
-
     import { isAuth } from "../../store/auth";
     import { navigate } from "svelte-routing";
     import { LOGIN } from "../../constants/pages";

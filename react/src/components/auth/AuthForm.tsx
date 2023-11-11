@@ -20,7 +20,13 @@ export default function AuthForm({ title, submitText, loading, onSubmit, LinkEle
                         <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
                             {title}
                         </h1>
-                        <form className="space-y-4 md:space-y-6">
+                        <form
+                            onSubmit={(e) => {
+                                e.preventDefault();
+                                onSubmit(email, password)
+                            }}
+                            className="space-y-4 md:space-y-6"
+                        >
                             <div>
                                 <label htmlFor="email" className="block mb-2 text-sm font-medium text-gray-900">Your
                                     email</label>
@@ -48,9 +54,8 @@ export default function AuthForm({ title, submitText, loading, onSubmit, LinkEle
                                 />
                             </div>
                             <button
-                                type="button"
+                                type="submit"
                                 className="btn btn-primary w-full"
-                                onClick={() => onSubmit(email, password)}
                             >
                                 {submitText}
                                 {loading && <span className="loading loading-spinner loading-xs"></span>}

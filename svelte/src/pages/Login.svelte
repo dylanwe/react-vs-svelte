@@ -32,7 +32,7 @@
         title="Sign in to your account"
         submitText="Login"
         onSubmit={login}
-        loading={loading}
+        {loading}
 >
     <div slot="link">
         Don’t have an account yet?
