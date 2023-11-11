@@ -1,6 +1,8 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { Dispatch, SetStateAction, useContext, useState } from "react";
 import { publicAxios } from "../util/axios.ts";
 import { LOGIN, TODOS } from "../constants/pages.ts";
+import AuthContext from "../context/auth/auth-context.ts";
+import { TOKEN_KEY } from "../constants/stored-token-key.ts";
 
 interface AuthHooksInterface {
     isAuthenticated: boolean;
@@ -12,9 +14,7 @@ interface AuthHooksInterface {
 }
 
 export default function useAuth(): AuthHooksInterface {
-    const [isAuthenticated, setIsAuthenticated] = useState<boolean>(
-        !!localStorage.getItem("token")
-    );
+    const { isAuthenticated, setIsAuthenticated } = useContext(AuthContext);
     const [loading, setLoading] = useState<boolean>(false);
 
     async function login(email: string, password: string) {
@@ -23,7 +23,7 @@ export default function useAuth(): AuthHooksInterface {
             const res = await publicAxios.post("/auth/login", { email, password });
             if (res.status === 200) {
                 setIsAuthenticated(true);
-                localStorage.setItem("token", JSON.stringify(res.data));
+                localStorage.setItem(TOKEN_KEY, JSON.stringify(res.data));
                 location.href = TODOS;
             }
         } catch (error) {
@@ -39,7 +39,7 @@ export default function useAuth(): AuthHooksInterface {
             const res = await publicAxios.post("/auth/register", { email, password });
             if (res.status === 200) {
                 setIsAuthenticated(true);
-                localStorage.setItem("token", JSON.stringify(res.data));
+                localStorage.setItem(TOKEN_KEY, JSON.stringify(res.data));
                 location.href = TODOS;
             }
         } catch (error) {
@@ -50,7 +50,7 @@ export default function useAuth(): AuthHooksInterface {
     }
 
     function logout() {
-        localStorage.removeItem("token");
+        localStorage.removeItem(TOKEN_KEY);
         setIsAuthenticated(false);
         location.href = LOGIN;
     }

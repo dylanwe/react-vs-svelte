@@ -11,7 +11,7 @@ export default function ToDos() {
     const [todos, setTodos] = useState<ToDo[]>([])
 
     async function getToDos() {
-        const response = await api('todos');
+        const response = await api.get('todos');
 
         if (response.status !== 200) {
             console.log("Error retrieving todos")
@@ -53,12 +53,21 @@ export default function ToDos() {
 
             <ToDoForm addToDo={addToDo} newToDo={newToDo} setNewToDo={setNewToDo}/>
 
-            <ul>
-                {todos.map(todo => {
-                        return <ToDoItem todo={todo} removeToDo={removeToDo} updateToDo={updateToDo} key={todo.id}/>
-                    }
-                )}
-            </ul>
+            {todos.length > 0 ?
+                <ul>
+                    {todos.map(todo => {
+                            return <ToDoItem
+                                key={todo.id}
+                                todo={todo}
+                                removeToDo={removeToDo}
+                                updateToDo={updateToDo}
+                            />
+                        }
+                    )}
+                </ul>
+                :
+                <p className="text-center text-gray-500">No todos yet</p>
+            }
         </section>
     )
 }
