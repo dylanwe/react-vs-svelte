@@ -15,7 +15,7 @@ func ToDoRoutes(router *echo.Group) {
 		userId := claims.ID
 
 		var todos []database.ToDo
-		database.DB.Db.Where("user_id = ?", userId).Find(&todos)
+		database.DB.Db.Where("user_id = ?", userId).Order("id").Find(&todos)
 		return c.JSON(http.StatusOK, todos)
 	})
 
