@@ -1,10 +1,16 @@
 <script lang="ts">
     import { navigate } from "svelte-routing";
-    export let isAuth: boolean;
+    import { onMount } from "svelte";
+    import { isAuth } from "../store/auth";
+    import { LOGIN } from "../constants/pages";
 
-    if (!isAuth) {
-        navigate("/", { replace: true});
-    }
+    onMount(() => {
+        if (!$isAuth) {
+            navigate(LOGIN, { replace: true });
+        }
+    })
 </script>
 
-<slot/>
+{#if $isAuth}
+    <slot/>
+{/if}
