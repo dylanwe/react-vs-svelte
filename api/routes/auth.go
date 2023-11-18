@@ -36,7 +36,7 @@ func AuthRoutes(router *echo.Group) {
 		}
 
 		var user database.User
-		database.DB.Db.Where("email = ?", req.Email).First(&user)
+		database.DB.Where("email = ?", req.Email).First(&user)
 		if user.Id != 0 {
 			return c.JSON(http.StatusConflict, echo.Map{
 				"message": "Email already exists",
@@ -50,7 +50,7 @@ func AuthRoutes(router *echo.Group) {
 			Password: string(bytes),
 		}
 
-		database.DB.Db.Create(&newUser)
+		database.DB.Create(&newUser)
 
 		t, err := auth.CreateToken(newUser)
 		if err != nil {
@@ -74,7 +74,7 @@ func AuthRoutes(router *echo.Group) {
 		}
 
 		var user database.User
-		database.DB.Db.Where("email = ?", req.Email).First(&user)
+		database.DB.Where("email = ?", req.Email).First(&user)
 		if user.Id == 0 {
 			return c.JSON(http.StatusUnauthorized, echo.Map{
 				"message": "Email does not exist",
@@ -107,7 +107,7 @@ func AuthRoutes(router *echo.Group) {
 		}
 
 		var refreshToken database.RefreshToken
-		database.DB.Db.Where("refresh_token = ?", req.RefreshToken).First(&refreshToken)
+		database.DB.Where("refresh_token = ?", req.RefreshToken).First(&refreshToken)
 		if refreshToken.Id == 0 {
 			return c.JSON(http.StatusUnauthorized, echo.Map{
 				"message": "Invalid refresh token",
@@ -115,7 +115,7 @@ func AuthRoutes(router *echo.Group) {
 		}
 
 		var user database.User
-		database.DB.Db.Where("id = ?", refreshToken.UserID).First(&user)
+		database.DB.Where("id = ?", refreshToken.UserID).First(&user)
 		if user.Id == 0 {
 			return c.JSON(http.StatusUnauthorized, echo.Map{
 				"message": "Invalid refresh token",
@@ -123,7 +123,7 @@ func AuthRoutes(router *echo.Group) {
 		}
 
 		if auth.IsRefreshExpired(refreshToken.Expiration) {
-			database.DB.Db.Delete(&refreshToken)
+			database.DB.Delete(&refreshToken)
 
 			return c.JSON(http.StatusUnauthorized, echo.Map{
 				"message": "Refresh token expired",

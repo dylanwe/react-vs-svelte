@@ -15,7 +15,7 @@ func ToDoRoutes(router *echo.Group) {
 		userId := claims.ID
 
 		var todos []database.ToDo
-		database.DB.Db.Where("user_id = ?", userId).Order("id").Find(&todos)
+		database.DB.Where("user_id = ?", userId).Order("id").Find(&todos)
 		return c.JSON(http.StatusOK, todos)
 	})
 
@@ -31,7 +31,7 @@ func ToDoRoutes(router *echo.Group) {
 		}
 
 		todo.UserID = userId
-		database.DB.Db.Create(&todo)
+		database.DB.Create(&todo)
 		return c.JSON(http.StatusCreated, todo)
 	})
 
@@ -47,15 +47,15 @@ func ToDoRoutes(router *echo.Group) {
 		}
 
 		todo.UserID = userId
-		database.DB.Db.Save(&todo)
+		database.DB.Save(&todo)
 		return c.JSON(http.StatusOK, todo)
 	})
 
 	router.DELETE("/:id", func(c echo.Context) error {
 		id := c.Param("id")
 		var todo database.ToDo
-		database.DB.Db.Where("id = ?", id).First(&todo)
-		database.DB.Db.Delete(&todo)
+		database.DB.Where("id = ?", id).First(&todo)
+		database.DB.Delete(&todo)
 
 		return c.JSON(http.StatusOK, todo)
 	})
