@@ -46,14 +46,14 @@ func CreateRefreshToken(user database.User) database.RefreshToken {
 		Expiration:   time.Now().Add(24 * time.Hour),
 	}
 
-	database.DB.Db.Create(&refreshToken)
+	database.DB.Create(&refreshToken)
 	return refreshToken
 }
 
 func RemoveUsersRefreshTokens(user database.User) {
 	var refreshTokens []database.RefreshToken
-	database.DB.Db.Where("user_id = ?", user.Id).Find(&refreshTokens)
-	database.DB.Db.Delete(&refreshTokens)
+	database.DB.Where("user_id = ?", user.Id).Find(&refreshTokens)
+	database.DB.Delete(&refreshTokens)
 }
 
 func IsRefreshExpired(tokenExpiration time.Time) bool {

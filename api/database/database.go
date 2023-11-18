@@ -8,11 +8,7 @@ import (
 	"os"
 )
 
-type DbInstance struct {
-	Db *gorm.DB
-}
-
-var DB DbInstance
+var DB *gorm.DB
 
 func Connect() {
 	host := os.Getenv("DB_HOST")
@@ -38,5 +34,5 @@ func Connect() {
 		&RefreshToken{},
 	)
 
-	DB = DbInstance{Db: db}
+	DB = db
 }
